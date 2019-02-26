@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Parameters:
+    AwsAssumeRoleName:
+      Description: 'IAM Role name that Lambda is going to assume in each child account'
+      Type: 'String'
+    AwsAMLProviderName:
+      Description: 'SAML provider name provisioned in each account'
+      Type: 'String'
+    AzureObjectId:
+      Description: 'Azure gallery application object id'
+      Type: 'String'
+    AzureTenantId:
+      Description: 'Azure AD tenant id'
+      Type: 'String'
+    AzureUsername:
+      Description: 'Azure AD admin username'
+      Type: 'String'
+    AzurePassword:
+      Description: 'Azure AD admin password'
+      Type: 'String'
+      NoEcho: true
+Resources:
+  Function:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: 'index.handler'
+      Runtime: 'python2.7'
+      CodeUri: './handler.zip'
+      MemorySize: 1024
+      Timeout: 300
+      Tracing: 'Active'
+      Events:
+        SyncIAMRoles:
+          Type: 'Schedule'
+          Properties:
+            Schedule: 'rate(15 minutes)'
+      Policies:
+        - 'AWSLambdaBasicExecutionRole'
+        - 'AWSXrayWriteOnlyAccess'
+        - Statement:
+          - Effect: 'Allow'
+            Action:
+              - 'sts:AssumeRole'
+              - 'organizations:ListAccounts'
+            Resource: "*"
+      Environment:
+        Variables:
+          AWS_ASSUME_ROLE_NAME: !Ref 'AwsAssumeRoleName'
+          AWS_SAML_PROVIDER_NAME: !Ref 'AwsAMLProviderName'
+          AZURE_OBJECT_ID: !Ref 'AzureObjectId'
+          AZURE_TENANT_ID: !Ref 'AzureTenantId'
+          AZURE_USERNAME: !Ref 'AzureUsername'
+          AZURE_PASSWORD: !Ref 'AzurePassword'
+Outputs:
+  FunctionArn:
+    Value: !GetAtt 'Function.Arn'
+    Export:
+      Name: !Sub "${AWS::StackName}-FunctionArn"

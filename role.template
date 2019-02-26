@@ -1,0 +1,35 @@
+Parameters:
+  RoleName:
+    Type: 'String'
+    Default: 'azuread-discovery-role'
+  MasterAccountId:
+    Type: 'String'
+Resources:
+  AzureADDisroveryRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref 'RoleName'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: 'Allow'
+          Principal:
+            AWS:
+            - !Sub 'arn:aws:iam::${MasterAccountId}:root'
+          Action:
+          - 'sts:AssumeRole'
+      Path: '/'
+  AzureADDisroveryRolePolicies:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'list-roles'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: 'Allow'
+            Action:
+            - 'iam:ListRoles'
+            Resource: '*'
+      Roles:
+        - !Ref 'AzureADDisroveryRole'

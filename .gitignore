@@ -1,0 +1,7 @@
+.idea/
+handler.zip
+venv/
+src/site-packages
+sam.out.template
+.envrc
+*.pyc

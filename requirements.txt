@@ -1,0 +1,2 @@
+azure-graphrbac==0.53.0
+boto3==1.9.88

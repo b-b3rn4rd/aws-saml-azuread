@@ -1,0 +1,8 @@
+export STACK_NAME=azure-ad-sync-lambda
+export S3_BUCKET_NAME=my-bucket-name
+export AWS_ASSUME_ROLE_NAME=OrganizationAccountAccessRole
+export AWS_SAML_PROVIDER_NAME=iam-provider-name
+export AZURE_OBJECT_ID=azure-object-id
+export AZURE_TENANT_ID=azure-tenant-id
+export AZURE_USERNAME=azure-username
+export AZURE_PASSWORD=azure-password
